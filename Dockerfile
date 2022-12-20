@@ -1,5 +1,5 @@
 # Must use a Cuda version 11+
-FROM image_2_dockerfile
+FROM yakupkeskin/sam_base
 
 WORKDIR /
 
@@ -23,4 +23,5 @@ EXPOSE 8000
 
 WORKDIR ./src
 
-CMD python3 -u server.py
+CMD ["python3", "-u", "server.py"}
+
