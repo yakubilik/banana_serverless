@@ -29,8 +29,10 @@ def health_check():
 # Inference POST handler at '/' is called for every http call from Banana
 @server.route("/",methods=["GET","POST"])
 def inference():
+    print('geldi')
+    print(request)
     try:
-        data = json.loads(request.data)
+        data = json.loads(request.json)
         image = data["image"]
         target_list = json.loads(data["list"])
         print(target_list)
