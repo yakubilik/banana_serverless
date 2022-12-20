@@ -1,5 +1,5 @@
 # Must use a Cuda version 11+
-FROM yakupkeskin/sam_base
+FROM yakupkeskin/sam_base:latest
 
 WORKDIR /
 
