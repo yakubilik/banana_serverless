@@ -7,20 +7,30 @@ WORKDIR /
 RUN apt-get update && apt-get install -y git
 
 # Install python packages
-RUN pip3 install --upgrade pip
-ADD requirements.txt requirements.txt
-RUN pip3 install -r requirements.txt
+
+ADD build.sh .
+
+ADD download.sh .
+
+RUN sh build.sh
+
+WORKDIR /SAM
+
+RUN sh download.sh
+
 
 # We add the banana boilerplate here
 ADD server.py ./src
 
-ADD functions.py ./src
+# Add your model weight files 
+# (in this case we have a python script)
+ADD download.py ./src
+RUN python3 download.py
+
 
 # Add your custom app code, init() and inference()
 ADD app.py ./src
 
 EXPOSE 8000
-
-WORKDIR ./src
 
 CMD python3 -u server.py

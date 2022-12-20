@@ -1,0 +1,76 @@
+IMAGE, CREATED BY
+sha256:d7846796c495d2737866d547df3e3d492b7478a8a5ec47b42e1550c60cf6d2f0, CMD ["python" "-m" "cog.server.http"]
+<missing>, EXPOSE map[5000/tcp:{}]
+<missing>, WORKDIR /src
+<missing>, RUN /bin/sh -c pip install -r /tmp/requirements.txt # buildkit
+<missing>, COPY .cog/tmp/build2242719659/requirements.txt /tmp/requirements.txt # buildkit
+<missing>, RUN /bin/sh -c pip install /tmp/cog-0.0.1.dev-py3-none-any.whl # buildkit
+<missing>, COPY .cog/tmp/build2242719659/cog-0.0.1.dev-py3-none-any.whl /tmp/cog-0.0.1.dev-py3-none-any.whl # buildkit
+<missing>, RUN /bin/sh -c curl -s -S -L https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer | bash &&  git clone https://github.com/momo-lab/pyenv-install-latest.git "$(pyenv root)"/plugins/pyenv-install-latest &&  pyenv install-latest "3.8" &&  pyenv global $(pyenv install-latest --print "3.8") &&  pip install "wheel<1" # buildkit
+<missing>, RUN /bin/sh -c apt-get update -qq && apt-get install -qqy --no-install-recommends  make  build-essential  libssl-dev  zlib1g-dev  libbz2-dev  libreadline-dev  libsqlite3-dev  wget  curl  llvm  libncurses5-dev  libncursesw5-dev  xz-utils  tk-dev  libffi-dev  liblzma-dev  git  ca-certificates  && rm -rf /var/lib/apt/lists/* # buildkit
+<missing>, ENV PATH=/root/.pyenv/shims:/root/.pyenv/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+<missing>, RUN /bin/sh -c rm -f /etc/apt/sources.list.d/cuda.list &&     rm -f /etc/apt/sources.list.d/nvidia-ml.list &&     apt-key del 7fa2af80 # buildkit
+<missing>, ENV LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/lib/x86_64-linux-gnu:/usr/local/nvidia/lib64:/usr/local/nvidia/bin
+<missing>, ENV PYTHONUNBUFFERED=1
+<missing>, ENV DEBIAN_FRONTEND=noninteractive
+<missing>, RUN |1 TARGETARCH=amd64 /bin/sh -c apt-get update && apt-get install -y --no-install-recommends     ${NV_CUDNN_PACKAGE}     ${NV_CUDNN_PACKAGE_DEV}     && apt-mark hold ${NV_CUDNN_PACKAGE_NAME}     && rm -rf /var/lib/apt/lists/* # buildkit
+<missing>, LABEL com.nvidia.cudnn.version=8.1.1.33
+<missing>, LABEL maintainer=NVIDIA CORPORATION <cudatools@nvidia.com>
+<missing>, ARG TARGETARCH
+<missing>, ENV NV_CUDNN_PACKAGE_DEV=libcudnn8-dev=8.1.1.33-1+cuda11.2
+<missing>, ENV NV_CUDNN_PACKAGE=libcudnn8=8.1.1.33-1+cuda11.2
+<missing>, ENV NV_CUDNN_PACKAGE_NAME=libcudnn8
+<missing>, ENV NV_CUDNN_VERSION=8.1.1.33
+<missing>, ENV LIBRARY_PATH=/usr/local/cuda/lib64/stubs
+<missing>, RUN |1 TARGETARCH=amd64 /bin/sh -c apt-mark hold ${NV_LIBCUBLAS_DEV_PACKAGE_NAME} ${NV_LIBNCCL_DEV_PACKAGE_NAME} # buildkit
+<missing>, RUN |1 TARGETARCH=amd64 /bin/sh -c apt-get update && apt-get install -y --no-install-recommends     libtinfo5 libncursesw5     cuda-cudart-dev-11-2=${NV_CUDA_CUDART_DEV_VERSION}     cuda-command-line-tools-11-2=${NV_CUDA_LIB_VERSION}     cuda-minimal-build-11-2=${NV_CUDA_LIB_VERSION}     cuda-libraries-dev-11-2=${NV_CUDA_LIB_VERSION}     cuda-nvml-dev-11-2=${NV_NVML_DEV_VERSION}     ${NV_NVPROF_DEV_PACKAGE}     ${NV_LIBNPP_DEV_PACKAGE}     libcusparse-dev-11-2=${NV_LIBCUSPARSE_DEV_VERSION}     ${NV_LIBCUBLAS_DEV_PACKAGE}     ${NV_LIBNCCL_DEV_PACKAGE}     && rm -rf /var/lib/apt/lists/* # buildkit
+<missing>, LABEL maintainer=NVIDIA CORPORATION <cudatools@nvidia.com>
+<missing>, ARG TARGETARCH
+<missing>, ENV NV_LIBNCCL_DEV_PACKAGE=libnccl-dev=2.8.4-1+cuda11.2
+<missing>, ENV NCCL_VERSION=2.8.4-1
+<missing>, ENV NV_LIBNCCL_DEV_PACKAGE_VERSION=2.8.4-1
+<missing>, ENV NV_LIBNCCL_DEV_PACKAGE_NAME=libnccl-dev
+<missing>, ENV NV_NVPROF_DEV_PACKAGE=cuda-nvprof-11-2=11.2.67-1
+<missing>, ENV NV_NVPROF_VERSION=11.2.67-1
+<missing>, ENV NV_LIBCUBLAS_DEV_PACKAGE=libcublas-dev-11-2=11.3.1.68-1
+<missing>, ENV NV_LIBCUBLAS_DEV_PACKAGE_NAME=libcublas-dev-11-2
+<missing>, ENV NV_LIBCUBLAS_DEV_VERSION=11.3.1.68-1
+<missing>, ENV NV_LIBNPP_DEV_PACKAGE=libnpp-dev-11-2=11.2.1.68-1
+<missing>, ENV NV_LIBNPP_DEV_VERSION=11.2.1.68-1
+<missing>, ENV NV_LIBCUSPARSE_DEV_VERSION=11.3.1.68-1
+<missing>, ENV NV_NVML_DEV_VERSION=11.2.67-1
+<missing>, ENV NV_CUDA_CUDART_DEV_VERSION=11.2.72-1
+<missing>, ENV NV_CUDA_LIB_VERSION=11.2.0-1
+<missing>, RUN |1 TARGETARCH=amd64 /bin/sh -c apt-mark hold ${NV_LIBCUBLAS_PACKAGE_NAME} ${NV_LIBNCCL_PACKAGE_NAME} # buildkit
+<missing>, RUN |1 TARGETARCH=amd64 /bin/sh -c apt-get update && apt-get install -y --no-install-recommends     cuda-libraries-11-2=${NV_CUDA_LIB_VERSION}     ${NV_LIBNPP_PACKAGE}     cuda-nvtx-11-2=${NV_NVTX_VERSION}     libcusparse-11-2=${NV_LIBCUSPARSE_VERSION}     ${NV_LIBCUBLAS_PACKAGE}     ${NV_LIBNCCL_PACKAGE}     && rm -rf /var/lib/apt/lists/* # buildkit
+<missing>, LABEL maintainer=NVIDIA CORPORATION <cudatools@nvidia.com>
+<missing>, ARG TARGETARCH
+<missing>, ENV NV_LIBNCCL_PACKAGE=libnccl2=2.8.4-1+cuda11.2
+<missing>, ENV NCCL_VERSION=2.8.4-1
+<missing>, ENV NV_LIBNCCL_PACKAGE_VERSION=2.8.4-1
+<missing>, ENV NV_LIBNCCL_PACKAGE_NAME=libnccl2
+<missing>, ENV NV_LIBCUBLAS_PACKAGE=libcublas-11-2=11.3.1.68-1
+<missing>, ENV NV_LIBCUBLAS_VERSION=11.3.1.68-1
+<missing>, ENV NV_LIBCUBLAS_PACKAGE_NAME=libcublas-11-2
+<missing>, ENV NV_LIBCUSPARSE_VERSION=11.3.1.68-1
+<missing>, ENV NV_LIBNPP_PACKAGE=libnpp-11-2=11.2.1.68-1
+<missing>, ENV NV_LIBNPP_VERSION=11.2.1.68-1
+<missing>, ENV NV_NVTX_VERSION=11.2.67-1
+<missing>, ENV NV_CUDA_LIB_VERSION=11.2.0-1
+<missing>, ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility
+<missing>, ENV NVIDIA_VISIBLE_DEVICES=all
+<missing>, COPY NGC-DL-CONTAINER-LICENSE / # buildkit
+<missing>, ENV LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64
+<missing>, ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+<missing>, RUN |1 TARGETARCH=amd64 /bin/sh -c echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf     && echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf # buildkit
+<missing>, RUN |1 TARGETARCH=amd64 /bin/sh -c apt-get update && apt-get install -y --no-install-recommends     cuda-cudart-11-2=${NV_CUDA_CUDART_VERSION}     ${NV_CUDA_COMPAT_PACKAGE}     && ln -s cuda-11.2 /usr/local/cuda &&     rm -rf /var/lib/apt/lists/* # buildkit
+<missing>, ENV CUDA_VERSION=11.2.0
+<missing>, RUN |1 TARGETARCH=amd64 /bin/sh -c apt-get update && apt-get install -y --no-install-recommends     gnupg2 curl ca-certificates &&     curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/${NVARCH}/3bf863cc.pub | apt-key add - &&     echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/${NVARCH} /" > /etc/apt/sources.list.d/cuda.list &&     apt-get purge --autoremove -y curl     && rm -rf /var/lib/apt/lists/* # buildkit
+<missing>, LABEL maintainer=NVIDIA CORPORATION <cudatools@nvidia.com>
+<missing>, ARG TARGETARCH
+<missing>, ENV NV_CUDA_COMPAT_PACKAGE=cuda-compat-11-2
+<missing>, ENV NV_CUDA_CUDART_VERSION=11.2.72-1
+<missing>, ENV NVIDIA_REQUIRE_CUDA=cuda>=11.2 brand=tesla,driver>=418,driver<419 brand=tesla,driver>=450,driver<451
+<missing>, ENV NVARCH=x86_64
+<missing>, /bin/sh -c #(nop)  CMD ["bash"]
+<missing>, /bin/sh -c #(nop) ADD file:7633003155a1059419aa1a6756fafb6e4f419d65bff7feb7c945de1e29dccb1e in / 

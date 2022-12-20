@@ -4,39 +4,50 @@
 # Instead, edit the init() and inference() functions in app.py
 
 from sanic import Sanic, response
-import subprocess
 import app as user_src
+from flask import Flask, request, jsonify
+import json
+import torch
 
 # We do the model load-to-GPU step on server startup
 # so the model object is available globally for reuse
 user_src.init()
 
 # Create the http server app
-server = Sanic("my_app")
+server = Flask(__name__)
+
 
 # Healthchecks verify that the environment is correct on Banana Serverless
-@server.route('/healthcheck', methods=["GET"])
-def healthcheck(request):
+@server.route("/healtcheck")
+def health_check():
     # dependency free way to check if GPU is visible
-    gpu = False
-    out = subprocess.run("nvidia-smi", shell=True)
-    if out.returncode == 0: # success state on shell command
-        gpu = True
+    gpu = torch.cuda.is_available()
+    return_json = {"state": "healthy", "gpu": gpu}
 
-    return response.json({"state": "healthy", "gpu": gpu})
+    return json.dumps(return_json)
 
 # Inference POST handler at '/' is called for every http call from Banana
-@server.route('/', methods=["POST"]) 
-def inference(request):
+@server.route("/",methods=["GET","POST"])
+def inference():
     try:
-        model_inputs = response.json.loads(request.json)
+        data = json.loads(request.data)
+        image = data["image"]
+        target_list = json.loads(data["list"])
+        print(target_list)
+        print(type(image))
+        model_inputs = {"image":image,"target_list":target_list}
+
+        output = user_src.inference(model_inputs)
+        print("output döndü")
+        print(output)
+
+        return {"result":output}
+
+
     except:
-        model_inputs = request.json
-
-    output = user_src.inference(model_inputs)
-
-    return response.json(output)
+        return jsonify(patladi="patladi")
 
 
 if __name__ == '__main__':
-    server.run(host='0.0.0.0', port=8000, workers=1)
+    server.run(host='0.0.0.0', port=8000)
+
