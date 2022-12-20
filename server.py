@@ -8,7 +8,7 @@ import app as user_src
 from flask import Flask, request, jsonify
 import json
 import torch
-
+import ast
 # We do the model load-to-GPU step on server startup
 # so the model object is available globally for reuse
 user_src.init()
@@ -32,11 +32,15 @@ def inference():
     print('geldi')
     print(request)
     try:
-        data = json.loads(request.json)
-        image = data["image"]
-        target_list = json.loads(data["list"])
-        print(target_list)
-        print(type(image))
+        js = request.json
+        inputs = js.get("modelInputs")
+        image = inputs["image"]
+        target_list = inputs["target_list"]
+        target_list = ast.literal_eval(target_list)
+        print("Target_list",target_list)
+        print("Target_list",type(target_list))
+
+
         model_inputs = {"image":image,"target_list":target_list}
 
         output = user_src.inference(model_inputs)
@@ -46,8 +50,8 @@ def inference():
         return {"result":output}
 
 
-    except:
-        return jsonify(patladi="patladi")
+    except Exception as e:
+        return jsonify(patladi=e)
 
 
 if __name__ == '__main__':
