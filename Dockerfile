@@ -23,5 +23,5 @@ EXPOSE 8000
 
 WORKDIR ./src
 
-CMD ["python3", "-u", "server.py"}
+CMD ["python3", "-u", "server.py"]
 
