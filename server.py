@@ -46,7 +46,7 @@ def inference():
         print("output döndü")
         print(output)
 
-        return output
+        return {"oldImage": output} 
 
 
     except Exception as e:
