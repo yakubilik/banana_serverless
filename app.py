@@ -29,8 +29,8 @@ def inference(model_inputs:dict) -> dict:
     global model
     try:
         image = model_inputs.get("image")
-        target_list = model_inputs.get("target_list")
-        result = predict_model(image=image,target_ages=target_list,net=model)
+        target_age = model_inputs.get("target_age")
+        result = predict_model(image=image,target_age=target_age,net=model)
 
         response_dict = {}
 
