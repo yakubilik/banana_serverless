@@ -34,7 +34,7 @@ def inference(model_inputs:dict) -> dict:
 
         response_dict = {}
 
-        return {"result":result}
+        return {"oldImages":result}
     except:
         return False
 
