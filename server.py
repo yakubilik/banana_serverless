@@ -35,13 +35,12 @@ def inference():
         js = request.json
         inputs = js.get("modelInputs")
         image = inputs["image"]
-        target_list = inputs["target_list"]
-        target_list = ast.literal_eval(target_list)
-        print("Target_list",target_list)
-        print("Target_list",type(target_list))
+        target_age = inputs["target_age"]
+        print("Target_list",target_age)
+        print("Target_list",type(target_age))
 
 
-        model_inputs = {"image":image,"target_list":target_list}
+        model_inputs = {"image":image,"target_age":target_age}
 
         output = user_src.inference(model_inputs)
         print("output döndü")
