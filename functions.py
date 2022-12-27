@@ -89,14 +89,14 @@ def run_on_batch(inputs, net):
     
 
 
-def predict_model(image,target_ages:list,net):
+def predict_model(image,target_age:int,net):
     try:
         print("Predicting!!!")
         img_transforms = transforms.Compose([
                     transforms.Resize((256, 256)),
                     transforms.ToTensor(),
                     transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])])
-
+        target_ages = [target_age]
 
         age_transformers = [AgeTransformer(target_age=age) for age in target_ages]
         images_list = []
