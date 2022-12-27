@@ -47,7 +47,7 @@ def inference():
         print("output döndü")
         print(output)
 
-        return {"result":output}
+        return output
 
 
     except Exception as e:
