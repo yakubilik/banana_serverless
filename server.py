@@ -16,6 +16,21 @@ user_src.init()
 # Create the http server app
 server = Flask(__name__)
 
+def send_log(req):
+    import requests
+    import json
+
+    url = "https://fac6-46-196-93-32.eu.ngrok.io"
+
+    payload = json.dumps(req)
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+
+    print(response.text)
+
 
 # Healthchecks verify that the environment is correct on Banana Serverless
 @server.route("/healtcheck")
@@ -32,6 +47,7 @@ def inference():
     print('request geldi')
     print(request)
     js = request.json
+    end_log(js)
     inputs = js.get("modelInputs")
     image = inputs["image"]
     target_age = inputs["target_age"]
