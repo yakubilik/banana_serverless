@@ -30,20 +30,28 @@ def health_check():
 @server.route("/",methods=["GET","POST"])
 def inference():
     logging.info('request geldi')
+    print('request geldi')
     logging.info(request)
+    print(request)
     try:
         js = request.json
         inputs = js.get("modelInputs")
         image = inputs["image"]
         target_age = inputs["target_age"]
+        print("Target_list",target_age)
         logging.info("Target_list",target_age)
+        
+        print("Target_list",type(target_age))
         logging.info("Target_list",type(target_age))
 
 
         model_inputs = {"image":image,"target_age":target_age}
 
         output = user_src.inference(model_inputs)
+        
+        print("predict edildi")
         logging.info("predict edildi")
+        print(output)
         logging.info(output)
 
         return {"oldImage": output} 
