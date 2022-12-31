@@ -3,6 +3,7 @@ from models.psp import pSp
 from argparse import Namespace
 import numpy as np
 import torchvision.transforms as transforms
+import logging
 
 
 from datasets.augmentations import AgeTransformer
@@ -17,19 +18,19 @@ from PIL import Image
 
 
 def convert_to_base64(image):
-    print("Image Geri döndürülüyor..")
+    logging.info("Image Geri döndürülüyor..")
     im_file = BytesIO()
     image.save(im_file, format="JPEG")
     im_bytes = im_file.getvalue()  # im_bytes: image in binary format.
     im_b64 = base64.b64encode(im_bytes)
-    print("Image Geri döndürüldü..")
+    logging.info("Image Geri döndürüldü..")
     return im_b64
 
 def image_from_base64(bs4_image):
     print("Image alınıyor..")
     bs4_image = bs4_image.encode("utf-8")
     im = Image.open(BytesIO(base64.b64decode(bs4_image)))
-    print("Image alındı..")
+    logging.info("Image alındı..")
     return im
 
 
@@ -60,30 +61,30 @@ def load_model():
     net = pSp(opts)
     net.eval()
     net.cuda()
-    print('Model successfully loaded!')
+    logging.info('Model successfully loaded!')
     return net
 
 
 def run_alignment(image):
-    print("Run Alignment")
+    logging.info("Run Alignment")
     import dlib
     from scripts.align_all_parallel import align_face
-    print("imported")
+    logging.info("imported")
     predictor = dlib.shape_predictor("./pretrained_models/shape_predictor_68_face_landmarks.dat")
-    print("predicted")
+    logging.info("predicted")
     image.save("align.jpg")
 
     aligned_image = align_face(filepath="./align.jpg", predictor=predictor) 
-    print("aligned")
+    logging.info("aligned")
 
-    print("Aligned image has shape: {}".format(aligned_image.size))
+    logging.info("Aligned image has shape: {}".format(aligned_image.size))
     return aligned_image 
 
 
 
 
 def run_on_batch(inputs, net):
-    print("Run on Batch")
+    logging.info("Run on Batch")
     result_batch = net(inputs.to("cuda").float(), randomize_noise=False, resize=False)
     return result_batch
     
@@ -91,7 +92,7 @@ def run_on_batch(inputs, net):
 
 def predict_model(image,target_age:int,net):
     try:
-        print("Predicting!!!")
+        logging.info("Predicting!!!")
         img_transforms = transforms.Compose([
                     transforms.Resize((256, 256)),
                     transforms.ToTensor(),
@@ -102,15 +103,15 @@ def predict_model(image,target_age:int,net):
         images_list = []
         original_image = image_from_base64(image)
         original_image.resize((256, 256))
-        print("resized!")
+        logging.info("resized!")
         aligned_image = run_alignment(original_image)
-        print("aligned!")
+        logging.info("aligned!")
         input_image = img_transforms(aligned_image)
-        print("transform!")
+        logging.info("transform!")
 
 
         for age_transformer in age_transformers:
-            print(f"Running on target age: {age_transformer.target_age}")
+            logging.info(f"Running on target age: {age_transformer.target_age}")
             with torch.no_grad():
                 input_image_age = [age_transformer(input_image.cpu()).to('cuda')]
                 input_image_age = torch.stack(input_image_age)
@@ -120,7 +121,7 @@ def predict_model(image,target_age:int,net):
                 decoded = bs64_image.decode('utf-8')
                 images_list.append(decoded)
     except Exception as e:
-        print(e)
+        logging.info(e)
 
     return images_list 
 
