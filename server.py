@@ -20,7 +20,7 @@ def send_log(req):
     import requests
     import json
 
-    url = "https://fac6-46-196-93-32.eu.ngrok.io"
+    url = "http://192.168.0.148:8080/"
 
     payload = json.dumps(req)
     headers = {
