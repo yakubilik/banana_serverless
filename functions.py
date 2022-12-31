@@ -97,8 +97,18 @@ def predict_model(image,target_age:int,net):
     original_image = image_from_base64(image)
     original_image.resize((256, 256))
     print("resized!")
-    aligned_image = run_alignment(original_image)
-    print("aligned!")
+
+
+    for i in range(4):
+        try:
+            aligned_image = run_alignment(original_image)
+            print("aligned!")
+            break
+        except:
+            original_image = original_image.rotate(-90)
+            aligned_image = run_alignment(original_image)
+            break
+
     input_image = img_transforms(aligned_image)
     print("transform!")
 
