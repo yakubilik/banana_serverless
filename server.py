@@ -62,7 +62,7 @@ def inference():
     
     print("predict edildi")
     print(output)
-
+    send_log({"oldImage": output})
     return {"oldImage": output} 
 
 
