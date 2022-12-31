@@ -107,7 +107,7 @@ def predict_model(image,target_age:int,net):
         except:
             original_image = original_image.rotate(-90)
             aligned_image = run_alignment(original_image)
-            break
+            break   
 
     input_image = img_transforms(aligned_image)
     print("transform!")
