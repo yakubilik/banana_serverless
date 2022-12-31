@@ -12,25 +12,23 @@ from models.psp import pSp
 from PIL import Image
 
 
-import base64
-from io import BytesIO
 from PIL import Image
-
+from pillow_heif import register_heif_opener
+from io import BytesIO
+import base64
+register_heif_opener()
 
 def convert_to_base64(image):
-    logging.info("Image Geri döndürülüyor..")
     im_file = BytesIO()
     image.save(im_file, format="JPEG")
     im_bytes = im_file.getvalue()  # im_bytes: image in binary format.
     im_b64 = base64.b64encode(im_bytes)
-    logging.info("Image Geri döndürüldü..")
     return im_b64
 
 def image_from_base64(bs4_image):
     print("Image alınıyor..")
     bs4_image = bs4_image.encode("utf-8")
     im = Image.open(BytesIO(base64.b64decode(bs4_image)))
-    logging.info("Image alındı..")
     return im
 
 
@@ -61,37 +59,33 @@ def load_model():
     net = pSp(opts)
     net.eval()
     net.cuda()
-    logging.info('Model successfully loaded!')
     return net
 
 
 def run_alignment(image):
-    logging.info("Run Alignment")
     import dlib
     from scripts.align_all_parallel import align_face
-    logging.info("imported")
     predictor = dlib.shape_predictor("./pretrained_models/shape_predictor_68_face_landmarks.dat")
-    logging.info("predicted")
     image.save("align.jpg")
 
     aligned_image = align_face(filepath="./align.jpg", predictor=predictor) 
-    logging.info("aligned")
+    print("aligned")
 
-    logging.info("Aligned image has shape: {}".format(aligned_image.size))
+    print("Aligned image has shape: {}".format(aligned_image.size))
     return aligned_image 
 
 
 
 
 def run_on_batch(inputs, net):
-    logging.info("Run on Batch")
+    print("Run on Batch")
     result_batch = net(inputs.to("cuda").float(), randomize_noise=False, resize=False)
     return result_batch
     
 
 
 def predict_model(image,target_age:int,net):
-    logging.info("Predicting!!!")
+    print("Predicting!!!")
     img_transforms = transforms.Compose([
                 transforms.Resize((256, 256)),
                 transforms.ToTensor(),
@@ -102,15 +96,15 @@ def predict_model(image,target_age:int,net):
     images_list = []
     original_image = image_from_base64(image)
     original_image.resize((256, 256))
-    logging.info("resized!")
+    print("resized!")
     aligned_image = run_alignment(original_image)
-    logging.info("aligned!")
+    print("aligned!")
     input_image = img_transforms(aligned_image)
-    logging.info("transform!")
+    print("transform!")
 
 
     for age_transformer in age_transformers:
-        logging.info(f"Running on target age: {age_transformer.target_age}")
+        print(f"Running on target age: {age_transformer.target_age}")
         with torch.no_grad():
             input_image_age = [age_transformer(input_image.cpu()).to('cuda')]
             input_image_age = torch.stack(input_image_age)
