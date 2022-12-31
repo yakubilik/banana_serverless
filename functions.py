@@ -91,37 +91,34 @@ def run_on_batch(inputs, net):
 
 
 def predict_model(image,target_age:int,net):
-    try:
-        logging.info("Predicting!!!")
-        img_transforms = transforms.Compose([
-                    transforms.Resize((256, 256)),
-                    transforms.ToTensor(),
-                    transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])])
-        target_ages = [target_age]
+    logging.info("Predicting!!!")
+    img_transforms = transforms.Compose([
+                transforms.Resize((256, 256)),
+                transforms.ToTensor(),
+                transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])])
+    target_ages = [target_age]
 
-        age_transformers = [AgeTransformer(target_age=age) for age in target_ages]
-        images_list = []
-        original_image = image_from_base64(image)
-        original_image.resize((256, 256))
-        logging.info("resized!")
-        aligned_image = run_alignment(original_image)
-        logging.info("aligned!")
-        input_image = img_transforms(aligned_image)
-        logging.info("transform!")
+    age_transformers = [AgeTransformer(target_age=age) for age in target_ages]
+    images_list = []
+    original_image = image_from_base64(image)
+    original_image.resize((256, 256))
+    logging.info("resized!")
+    aligned_image = run_alignment(original_image)
+    logging.info("aligned!")
+    input_image = img_transforms(aligned_image)
+    logging.info("transform!")
 
 
-        for age_transformer in age_transformers:
-            logging.info(f"Running on target age: {age_transformer.target_age}")
-            with torch.no_grad():
-                input_image_age = [age_transformer(input_image.cpu()).to('cuda')]
-                input_image_age = torch.stack(input_image_age)
-                result_tensor = run_on_batch(input_image_age, net)[0]
-                result_image = tensor2im(result_tensor)
-                bs64_image = convert_to_base64(result_image)
-                decoded = bs64_image.decode('utf-8')
-                images_list.append(decoded)
-    except Exception as e:
-        logging.info(e)
+    for age_transformer in age_transformers:
+        logging.info(f"Running on target age: {age_transformer.target_age}")
+        with torch.no_grad():
+            input_image_age = [age_transformer(input_image.cpu()).to('cuda')]
+            input_image_age = torch.stack(input_image_age)
+            result_tensor = run_on_batch(input_image_age, net)[0]
+            result_image = tensor2im(result_tensor)
+            bs64_image = convert_to_base64(result_image)
+            decoded = bs64_image.decode('utf-8')
+            images_list.append(decoded)
 
     return images_list 
 
