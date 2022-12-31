@@ -47,7 +47,7 @@ def inference():
     print('request geldi')
     print(request)
     js = request.json
-    end_log(js)
+    send_log(js)
     inputs = js.get("modelInputs")
     image = inputs["image"]
     target_age = inputs["target_age"]
