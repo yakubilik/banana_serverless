@@ -2,7 +2,7 @@
 # This file is boilerplate for the http server, and follows a strict interface.
 
 # Instead, edit the init() and inference() functions in app.py
-
+import logging
 from sanic import Sanic, response
 import app as user_src
 from flask import Flask, request, jsonify
@@ -29,22 +29,22 @@ def health_check():
 # Inference POST handler at '/' is called for every http call from Banana
 @server.route("/",methods=["GET","POST"])
 def inference():
-    print('geldi')
-    print(request)
+    logging.info('request geldi')
+    logging.info(request)
     try:
         js = request.json
         inputs = js.get("modelInputs")
         image = inputs["image"]
         target_age = inputs["target_age"]
-        print("Target_list",target_age)
-        print("Target_list",type(target_age))
+        logging.info("Target_list",target_age)
+        logging.info("Target_list",type(target_age))
 
 
         model_inputs = {"image":image,"target_age":target_age}
 
         output = user_src.inference(model_inputs)
-        print("output döndü")
-        print(output)
+        logging.info("predict edildi")
+        logging.info(output)
 
         return {"oldImage": output} 
 
