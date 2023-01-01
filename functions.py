@@ -10,7 +10,7 @@ from utils.common import tensor2im
 from models.psp import pSp
 from PIL import Image
 
-a = 1
+a = 2
 from PIL import Image
 from io import BytesIO
 import base64
