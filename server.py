@@ -15,8 +15,6 @@ user_src.init()
 # Create the http server app
 server = Flask(__name__)
 
-from .send_log import send_log
-
 
 # Healthchecks verify that the environment is correct on Banana Serverless
 @server.route("/healtcheck")
@@ -30,21 +28,21 @@ def health_check():
 # Inference POST handler at '/' is called for every http call from Banana
 @server.route("/",methods=["GET","POST"])
 def inference():
-    send_log({"info":'request geldi'})
+    #send_log({"info":'request geldi'})
     print(request)
     js = request.json
-    send_log(js)
+    #send_log(js)
     inputs = js.get("modelInputs")
     image = inputs["image"]
     target_age = inputs["target_age"]
-    send_log({"Target_list":target_age})
+    #send_log({"Target_list":target_age})
     
     model_inputs = {"image":image,"target_age":target_age}
 
     output = user_src.inference(model_inputs)
     
-    send_log({"info":'predict edildi'})
-    send_log({"oldImage": output})
+    #send_log({"info":'predict edildi'})
+    #send_log({"oldImage": output})
     return {"oldImage": output} 
 
 

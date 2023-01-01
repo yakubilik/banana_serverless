@@ -11,17 +11,6 @@ def init():
     
     model = load_model()
 
-    def convert_to_base64(image):
-        im_file = BytesIO()
-        image.save(im_file, format="JPEG")
-        im_bytes = im_file.getvalue()  # im_bytes: image in binary format.
-        im_b64 = base64.b64encode(im_bytes)
-        return im_b64
-
-    def image_from_base64(bs4_image):
-        im = Image.open(BytesIO(base64.b64decode(bs4_image)))
-        return im
-
 
 # Inference is ran for every server call
 # Reference your preloaded global model variable here.

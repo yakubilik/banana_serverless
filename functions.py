@@ -14,7 +14,6 @@ a = 5
 from PIL import Image
 from io import BytesIO
 import base64
-from .send_log import send_log
 from Rotator import Rotator
 
 
@@ -89,7 +88,7 @@ def run_on_batch(inputs, net):
 
 def predict_model(image,target_age:int,net):
 
-    send_log({"info":"Predicting"})
+    #send_log({"info":"Predicting"})
     img_transforms = transforms.Compose([
                 transforms.Resize((256, 256)),
                 transforms.ToTensor(),
@@ -100,18 +99,18 @@ def predict_model(image,target_age:int,net):
     images_list = []
     original_image = image_from_base64(image)
     original_image.resize((256, 256))
-    send_log({"info":"resized"})
+    #send_log({"info":"resized"})
 
 
     aligned_image = run_alignment(original_image)
-    send_log({"info":"aligned"})
+    #send_log({"info":"aligned"})
 
     input_image = img_transforms(aligned_image)
-    send_log({"info":"transformed"})
+    #send_log({"info":"transformed"})
 
 
     for age_transformer in age_transformers:
-        send_log({"info":f"Running on target age: {age_transformer.target_age}"})
+        #send_log({"info":f"Running on target age: {age_transformer.target_age}"})
         with torch.no_grad():
             input_image_age = [age_transformer(input_image.cpu()).to('cuda')]
             input_image_age = torch.stack(input_image_age)
