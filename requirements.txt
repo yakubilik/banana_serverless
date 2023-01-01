@@ -2,3 +2,5 @@ sanic==22.6.2
 transformers
 accelerate
 flask
+pillow-heif
+requests

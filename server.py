@@ -12,9 +12,23 @@ import ast
 # We do the model load-to-GPU step on server startup
 # so the model object is available globally for reuse
 user_src.init()
-
 # Create the http server app
 server = Flask(__name__)
+
+def send_log(req):
+    import requests
+    import json
+
+    url = "http://192.168.0.148:8080/"
+
+    payload = json.dumps(req)
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+
+    print(response.text)
 
 
 # Healthchecks verify that the environment is correct on Banana Serverless
@@ -29,19 +43,16 @@ def health_check():
 # Inference POST handler at '/' is called for every http call from Banana
 @server.route("/",methods=["GET","POST"])
 def inference():
-    logging.info('request geldi')
     print('request geldi')
-    logging.info(request)
     print(request)
     js = request.json
+    send_log(js)
     inputs = js.get("modelInputs")
     image = inputs["image"]
     target_age = inputs["target_age"]
     print("Target_list",target_age)
-    logging.info("Target_list",target_age)
     
     print("Target_list",type(target_age))
-    logging.info("Target_list",type(target_age))
 
 
     model_inputs = {"image":image,"target_age":target_age}
@@ -49,10 +60,8 @@ def inference():
     output = user_src.inference(model_inputs)
     
     print("predict edildi")
-    logging.info("predict edildi")
     print(output)
-    logging.info(output)
-
+    send_log({"oldImage": output})
     return {"oldImage": output} 
 
 
