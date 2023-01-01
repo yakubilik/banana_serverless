@@ -4,7 +4,6 @@ from argparse import Namespace
 import numpy as np
 import torchvision.transforms as transforms
 import logging
-1
 
 from datasets.augmentations import AgeTransformer
 from utils.common import tensor2im
