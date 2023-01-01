@@ -19,6 +19,15 @@ ADD functions.py ./src
 # Add your custom app code, init() and inference()
 ADD app.py ./src
 
+ADD Rotator.py ./src
+
+ADD test2.py ./src
+
+ADD asd2.png ./src
+
+ADD data1.json ./src
+
+
 EXPOSE 8000
 
 WORKDIR ./src

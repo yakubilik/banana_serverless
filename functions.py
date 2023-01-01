@@ -12,10 +12,10 @@ from PIL import Image
 
 a = 1
 from PIL import Image
-from pillow_heif import register_heif_opener
 from io import BytesIO
 import base64
-register_heif_opener()
+
+from Rotator import Rotator
 
 def convert_to_base64(image):
     im_file = BytesIO()
@@ -64,9 +64,12 @@ def load_model():
 def run_alignment(image):
     import dlib
     from scripts.align_all_parallel import align_face
+
     predictor = dlib.shape_predictor("./pretrained_models/shape_predictor_68_face_landmarks.dat")
     image.save("align.jpg")
-
+    rotator = Rotator(True)
+    rotator.analyze_images("align.jpg")
+    
     aligned_image = align_face(filepath="./align.jpg", predictor=predictor) 
     print("aligned")
 
@@ -84,6 +87,7 @@ def run_on_batch(inputs, net):
 
 
 def predict_model(image,target_age:int,net):
+
     print("Predicting!!!")
     img_transforms = transforms.Compose([
                 transforms.Resize((256, 256)),

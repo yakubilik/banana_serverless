@@ -1,6 +1,9 @@
+dlib
+click
+numpy
 sanic==22.6.2
 transformers
 accelerate
 flask
-pillow-heif
 requests
+opencv-python
