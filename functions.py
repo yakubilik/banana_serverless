@@ -98,12 +98,8 @@ def predict_model(image,target_age:int,net):
     print("resized!")
 
 
-    try:
-        aligned_image = run_alignment(original_image)
-        print("aligned!")
-    except:
-        original_image = original_image.rotate(-90)
-        aligned_image = run_alignment(original_image)   
+    aligned_image = run_alignment(original_image)
+    print("aligned!")
 
     input_image = img_transforms(aligned_image)
     print("transform!")
