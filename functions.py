@@ -10,7 +10,7 @@ from utils.common import tensor2im
 from models.psp import pSp
 from PIL import Image
 
-
+a = 1
 from PIL import Image
 from pillow_heif import register_heif_opener
 from io import BytesIO
