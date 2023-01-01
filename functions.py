@@ -64,13 +64,23 @@ def load_model():
 def run_alignment(image):
     import dlib
     from scripts.align_all_parallel import align_face
-
+    print("run alignmanttayım")
     predictor = dlib.shape_predictor("./pretrained_models/shape_predictor_68_face_landmarks.dat")
+
     image.save("align.jpg")
-    rotator = Rotator(True)
-    rotator.analyze_images("align.jpg")
-    
-    aligned_image = align_face(filepath="./align.jpg", predictor=predictor) 
+    print("image save edildi")
+    try:
+        aligned_image = align_face(filepath="./align.jpg", predictor=predictor) 
+    except Exception as e:
+        try:
+            print("Yüz Bulma AlignDA patladı")
+            rotator = Rotator(True)
+            rotator.analyze_images("align.jpg")
+            aligned_image = align_face(filepath="./align.jpg", predictor=predictor) 
+        except:
+            print("Yüz Bulunamadı")
+            return image
+
     print("aligned")
 
     print("Aligned image has shape: {}".format(aligned_image.size))
@@ -87,7 +97,6 @@ def run_on_batch(inputs, net):
 
 
 def predict_model(image,target_age:int,net):
-
     #send_log({"info":"Predicting"})
     img_transforms = transforms.Compose([
                 transforms.Resize((256, 256)),
@@ -98,14 +107,23 @@ def predict_model(image,target_age:int,net):
     age_transformers = [AgeTransformer(target_age=age) for age in target_ages]
     images_list = []
     original_image = image_from_base64(image)
+    print("image_from_bas64 calisti")
     original_image.resize((256, 256))
+    print("resize calisti calisti")
     #send_log({"info":"resized"})
 
+    try:
+        aligned_image = run_alignment(original_image)
+    except Exception as e:
+        print("alignment patladi",e)
+        aligned_image = image
 
-    aligned_image = run_alignment(original_image)
     #send_log({"info":"aligned"})
-
-    input_image = img_transforms(aligned_image)
+    try:
+        input_image = img_transforms(aligned_image)
+    except Exception as e:
+        print("İşlenemedi",e)
+        return [aligned_image]
     #send_log({"info":"transformed"})
 
 
